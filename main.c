@@ -7,47 +7,54 @@
  * Lee, Ashley Fiona
  * Villorente, Khyle Raeke
  */
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "graph.h"
 #include "IO.h"
+#include "traversal.h"
 
 int main() {
-    char inputFileName[100]; // buffer to store user-input filename
+    char inputFileName[100];
     Graph graphData;
-    int loadedSuccessfully = 0;
 
-    // Prompt user to enter input file name
-    printf("Enter input file name: ");
+    // Ask for the input filename (e.g., G.TXT)
+    printf("Input filename: ");
     scanf("%s", inputFileName);
 
-    // Try loading the graph
-    if (readGraphFromFile(inputFileName, &graphData) != 0) {
-        printf("Failed to load graph from: %s\n", inputFileName);
-    } else {
-        loadedSuccessfully = 1;
-        printf("Graph loaded from: %s\n", inputFileName);
-        printf("Total number of vertices: %d\n", graphData.numVertices);
+    // Try to read graph from the input file
+    if (readGraphFromFile(inputFileName, &graphData) == 0) {
+        printf("File %s not found.\n", inputFileName);
+        return 1;
     }
 
-    // If graph loaded, print adjacency list
-    if (loadedSuccessfully) {
-        for (int vertexIndex = 0; vertexIndex < graphData.numVertices; vertexIndex++) {
-            printf("%s: ", graphData.vertices[vertexIndex].vertexName);
+    //writeOutput1("output1.txt", &graphData);
+    // writeOutput2("output2.txt", &graphData);
+    // writeOutput3("output3.txt", &graphData);
+    // writeOutput4("output4.txt", &graphData);
 
-            AdjListNode* currentNeighbor = graphData.vertices[vertexIndex].head;
-            while (currentNeighbor != NULL) {
-                printf("%s -> ", graphData.vertices[currentNeighbor->vertexIndex].vertexName);
-                currentNeighbor = currentNeighbor->next;
-            }
+    char startVertex[100];
+    int found = 0;
+    
+     while (!found) {
+             printf("Input start vertex for the traversal: ");
+            scanf("%s", startVertex);
 
-            printf("NULL\n");
-        }
-    } else {
-        printf("Graph was not loaded. Cannot display adjacency list.\n");
-    }
+             for (int i = 0; i < graphData.numVertices; i++) {
+                if (strcmp(graphData.vertices[i].vertexName, startVertex) == 0) {
+                    found = 1;
+                    break;
+                 }
+             }
+            
+            if (!found) {
+                 printf("Vertex %s not found.\n", startVertex);
+                 // Continue the loop to ask again
+             }
+         }
+
+    // writeOutput5(inputFileName, &graphData, startVertex);  // Changed from "output5.txt"
+    // writeOutput6(inputFileName, &graphData, startVertex);  // Changed from "output6.txt"
 
     return 0;
 }
-
