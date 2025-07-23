@@ -13,25 +13,22 @@
 #include "graph.h"
 #include "IO.h"
 
-int main(int argumentCount, char* argumentList[]) {
-    const char* inputFileName = NULL;
+int main() {
+    char inputFileName[100]; // buffer to store user-input filename
     Graph graphData;
     int loadedSuccessfully = 0;
 
-    // Check if input file was provided
-    if (argumentCount < 2) {
-        printf("Usage: %s <input_file>\n", argumentList[0]);
-    } else {
-        inputFileName = argumentList[1];
+    // Prompt user to enter input file name
+    printf("Enter input file name: ");
+    scanf("%s", inputFileName);
 
-        // loading the graph
-        if (readGraphFromFile(inputFileName, &graphData) != 0) {
-            printf("Failed to load graph from: %s\n", inputFileName);
-        } else {
-            loadedSuccessfully = 1;
-            printf("Graph loaded from: %s\n", inputFileName);
-            printf("Total number of vertices: %d\n", graphData.numVertices);
-        }
+    // Try loading the graph
+    if (readGraphFromFile(inputFileName, &graphData) != 0) {
+        printf("Failed to load graph from: %s\n", inputFileName);
+    } else {
+        loadedSuccessfully = 1;
+        printf("Graph loaded from: %s\n", inputFileName);
+        printf("Total number of vertices: %d\n", graphData.numVertices);
     }
 
     // If graph loaded, print adjacency list
@@ -53,3 +50,4 @@ int main(int argumentCount, char* argumentList[]) {
 
     return 0;
 }
+
