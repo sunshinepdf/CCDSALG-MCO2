@@ -64,6 +64,7 @@ void initializeGraph(Graph* g) {
 /**
  * Adds an undirected edge between two vertices in the graph.
  * Since the graph is undirected, both adjacency lists are updated.
+ * Prevents duplicate edges.
  * 
  * @param g Pointer to the Graph.
  * @param from Name of the first vertex.
@@ -74,6 +75,15 @@ void addEdge(Graph* g, const char* from, const char* to) {
     int toIdx = getVertexIndex(g, to);
 
     if (fromIdx == -1 || toIdx == -1) return;
+    
+    // Check if edge already exists (from -> to)
+    AdjListNode* current = g->vertices[fromIdx].head;
+    while (current != NULL) {
+        if (current->vertexIndex == toIdx) {
+            return; // Edge already exists
+        }
+        current = current->next;
+    }
 
     // Add edge to both directions
     AdjListNode* node1 = createAdjListNode(toIdx);

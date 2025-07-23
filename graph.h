@@ -42,7 +42,7 @@ typedef struct {
 //function prototypes
 int getVertexIndex(Graph* g, const char* label);
 void addEdge(Graph* g, const char* from, const char* to);
-int addVertex(Graph* g, const char* label);
+void initializeGraph(Graph* g);
 AdjListNode* createAdjListNode(int index);
 
 #endif
