@@ -64,34 +64,66 @@ void initializeGraph(Graph* g) {
 /**
  * Adds an undirected edge between two vertices in the graph.
  * Since the graph is undirected, both adjacency lists are updated.
- * Prevents duplicate edges.
+ * Prevents duplicate edges by checking before adding.
+ * Ensures the 'from' vertex is added before the 'to' vertex to preserve input order.
  * 
  * @param g Pointer to the Graph.
  * @param from Name of the first vertex.
  * @param to Name of the second vertex.
  */
 void addEdge(Graph* g, const char* from, const char* to) {
+    // Ensure 'from' vertex is added first to preserve input file order
     int fromIdx = getVertexIndex(g, from);
+    if (fromIdx == -1) return;
+    
+    // Then add 'to' vertex
     int toIdx = getVertexIndex(g, to);
-
-    if (fromIdx == -1 || toIdx == -1) return;
+    if (toIdx == -1) return;
     
     // Check if edge already exists (from -> to)
     AdjListNode* current = g->vertices[fromIdx].head;
     while (current != NULL) {
         if (current->vertexIndex == toIdx) {
-            return; // Edge already exists
+            return; // Edge already exists, don't add again
         }
         current = current->next;
     }
 
-    // Add edge to both directions
+    // Add edge from -> to (append to end to preserve input order)
     AdjListNode* node1 = createAdjListNode(toIdx);
-    node1->next = g->vertices[fromIdx].head;
-    g->vertices[fromIdx].head = node1;
+    node1->next = NULL;
+    
+    if (g->vertices[fromIdx].head == NULL) {
+        g->vertices[fromIdx].head = node1;
+    } else {
+        AdjListNode* temp = g->vertices[fromIdx].head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = node1;
+    }
 
+    // Check if reverse edge already exists (to -> from)
+    current = g->vertices[toIdx].head;
+    while (current != NULL) {
+        if (current->vertexIndex == fromIdx) {
+            return; // Reverse edge already exists, don't add again
+        }
+        current = current->next;
+    }
+
+    // Add reverse edge to -> from (append to end to preserve input order)
     AdjListNode* node2 = createAdjListNode(fromIdx);
-    node2->next = g->vertices[toIdx].head;
-    g->vertices[toIdx].head = node2;
+    node2->next = NULL;
+    
+    if (g->vertices[toIdx].head == NULL) {
+        g->vertices[toIdx].head = node2;
+    } else {
+        AdjListNode* temp = g->vertices[toIdx].head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = node2;
+    }
 }
 

@@ -28,15 +28,17 @@ int main() {
         return 1;
     }
 
-    writeOutput1("output1.txt", &graphData);
-    writeOutput2("output2.txt", &graphData);
-    writeOutput3("output3.txt", &graphData);
-    writeOutput4("output4.txt", &graphData);
+    writeOutput1(inputFileName, &graphData);
+    writeOutput2(inputFileName, &graphData);
+    writeOutput3(inputFileName, &graphData);
+    writeOutput4(inputFileName, &graphData);
 
     char startVertex[MAX_NLENGTH]; 
     int found = 0;
     
-     while (!found) {
+    if(graphData.numVertices > 1) {
+
+     while (!found ) {
             printf("Input start vertex for the traversal: ");
             scanf("%s", startVertex);
 
@@ -49,11 +51,12 @@ int main() {
             
             if (!found) {
                  printf("Vertex %s not found.\n", startVertex);
+                 return 1;
              }
-         }
+     }
 
-     writeOutput5(inputFileName, &graphData, startVertex);  // Changed from "output5.txt"
-    writeOutput6(inputFileName, &graphData, startVertex);  // Changed from "output6.txt"
-
+        writeOutput5(inputFileName, &graphData, startVertex);
+        writeOutput6(inputFileName, &graphData, startVertex);
+    }
     return 0;
 }

@@ -35,10 +35,29 @@ int readGraphFromFile(const char* filename, Graph* g) {
         return 0;
     }
     
-    
     char line[512];
-    fgets(line, sizeof(line), file);
+    fgets(line, sizeof(line), file); // consume the newline after numVertices
 
+    // First pass: Add all main vertices in the order they appear in the file
+    long filePos = ftell(file); // Save current position
+    for (int i = 0; i < numVertices; i++) {
+        if (!fgets(line, sizeof(line), file)) {
+            fclose(file);
+            return 0;
+        }
+        
+        char lineCopy[256];
+        strcpy(lineCopy, line);
+        char* token = strtok(lineCopy, " \t\n");
+        if (token) {
+            char vertexName[MAX_NLENGTH];
+            strncpy(vertexName, token, MAX_NLENGTH - 1);
+            vertexName[MAX_NLENGTH - 1] = '\0';
+            getVertexIndex(g, vertexName); 
+        }
+    }
+
+    fseek(file, filePos, SEEK_SET);
     for (int i = 0; i < numVertices; i++) {
         if (!fgets(line, sizeof(line), file)) {
             fclose(file);
@@ -57,6 +76,7 @@ int readGraphFromFile(const char* filename, Graph* g) {
 
 /**
  * Parses a single line containing vertex adjacency information.
+ * Only adds edges in the direction specified by the line to preserve exact input order.
  * 
  * @param line the line to parse
  * @param g pointer to the Graph structure
@@ -89,7 +109,33 @@ int parseVertexLine(const char* line, Graph* g) {
         strncpy(adjacentName, token, MAX_NLENGTH - 1);
         adjacentName[MAX_NLENGTH - 1] = '\0';
 
-        addEdge(g, vertexName, adjacentName);
+        int toIdx = getVertexIndex(g, adjacentName);
+        if (toIdx != -1) {
+            AdjListNode* current = g->vertices[vertexIndex].head;
+            int exists = 0;
+            while (current != NULL) {
+                if (current->vertexIndex == toIdx) {
+                    exists = 1;
+                    break;
+                }
+                current = current->next;
+            }
+            
+            if (!exists) {
+                AdjListNode* newNode = createAdjListNode(toIdx);
+                newNode->next = NULL;
+                
+                if (g->vertices[vertexIndex].head == NULL) {
+                    g->vertices[vertexIndex].head = newNode;
+                } else {
+                    AdjListNode* temp = g->vertices[vertexIndex].head;
+                    while (temp->next != NULL) {
+                        temp = temp->next;
+                    }
+                    temp->next = newNode;
+                }
+            }
+        }
     }
     
     return 1;
@@ -276,21 +322,19 @@ void writeOutput4(const char* filename, Graph* g) {
  * @param filename filename of the original input file 
  * @param g pointer to the Graph structure
  */
-void writeOutput5(const char* filename, Graph* g) {
+void writeOutput5(const char* filename, Graph* g, char startVertex[MAX_NLENGTH]) {
     char outputFilename[256];
-    char startVertex[MAX_NLENGTH];
-    char bfsResult[MAX_VERTICES][MAX_NLENGTH];
-    int count = BFSTraversal(g, startVertex, bfsResult);
-
     createOutputFilename(outputFilename, filename, "-BFS.TXT");
     
     FILE* file = fopen(outputFilename, "w");
+
     if (g->numVertices == 0) {
         fclose(file);
         return;
     }
     
-    strcpy(startVertex, g->vertices[0].vertexName);
+    char bfsResult[MAX_VERTICES][MAX_NLENGTH];
+    int count = BFSTraversal(g, startVertex, bfsResult);
 
     for (int i = 0; i < count; i++) {
         if (i > 0) {
@@ -311,21 +355,19 @@ void writeOutput5(const char* filename, Graph* g) {
  * @param filename filename of the original input file 
  * @param g pointer to the Graph structure
  */
-void writeOutput6(const char* filename, Graph* g) {
+void writeOutput6(const char* filename, Graph* g, char startVertex[MAX_NLENGTH]) {
     char outputFilename[256];
-    char startVertex[MAX_NLENGTH];
-    char dfsResult[MAX_VERTICES][MAX_NLENGTH];
-    int count = DFSTraversal(g, startVertex, dfsResult);
-
     createOutputFilename(outputFilename, filename, "-DFS.TXT");
     
     FILE* file = fopen(outputFilename, "w");
+
     if (g->numVertices == 0) {
         fclose(file);
         return;
     }
     
-    strcpy(startVertex, g->vertices[0].vertexName);
+    char dfsResult[MAX_VERTICES][MAX_NLENGTH];
+    int count = DFSTraversal(g, startVertex, dfsResult);
     
     for (int i = 0; i < count; i++) {
         if (i > 0) {
@@ -337,68 +379,3 @@ void writeOutput6(const char* filename, Graph* g) {
     
     fclose(file);
 }  
-
-
-// /**
-//  * Output5: Writes BFS traversal sequence from a specified start vertex.
-//  * When multiple candidates exist, visit vertex with lowest ID (alphabetically first).
-//  * Uses BFS function from traversal.c to get the traversal data.
-//  * 
-//  * @param filename filename of the original input file 
-//  * @param g pointer to the Graph structure
-//  */
-// void writeOutput5(const char* filename, Graph* g, const char* startVertex) {
-//     char outputFilename[256];
-//     char bfsResult[MAX_VERTICES][MAX_NLENGTH];
-//     int count = BFSTraversal(g, startVertex, bfsResult);
-
-//     createOutputFilename(outputFilename, filename, "-BFS.TXT");
-    
-//     FILE* file = fopen(outputFilename, "w");
-//     if (!file || g->numVertices == 0) {
-//         fclose(file);
-//         return;
-//     }
-    
-//     for (int i = 0; i < count; i++) {
-//         if (i > 0) {
-//             fprintf(file, " ");
-//         }
-//         fprintf(file, "%s", bfsResult[i]);
-//     }
-//     fprintf(file, "\n");
-
-//     fclose(file);
-// }
-
-// /**
-//  * Output6: Writes DFS traversal sequence from a specified start vertex.
-//  * When multiple candidates exist, visit vertex with lowest ID (alphabetically first).
-//  * Uses DFS function from traversal.c to get the traversal data.
-//  * 
-//  * @param filename filename of the original input file 
-//  * @param g pointer to the Graph structure
-//  */
-// void writeOutput6(const char* filename, Graph* g, const char* startVertex) {
-//     char outputFilename[256];
-//     char dfsResult[MAX_VERTICES][MAX_NLENGTH];
-//     int count = DFSTraversal(g, startVertex, dfsResult);
-
-//     createOutputFilename(outputFilename, filename, "-DFS.TXT");
-    
-//     FILE* file = fopen(outputFilename, "w");
-//     if (!file || g->numVertices == 0) {
-//         fclose(file);
-//         return;
-//     }
-    
-//    for (int i = 0; i < count; i++) {
-//         if (i > 0) {
-//             fprintf(file, " ");
-//         }
-//         fprintf(file, "%s", dfsResult[i]);
-//     }
-//     fprintf(file, "\n");
-
-//     fclose(file);
-// }  

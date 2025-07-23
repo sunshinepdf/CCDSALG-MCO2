@@ -19,7 +19,7 @@ void writeOutput1(const char* filename, Graph* g);
 void writeOutput2(const char* filename, Graph* g);
 void writeOutput3(const char* filename, Graph* g);
 void writeOutput4(const char* filename, Graph* g);
-void writeOutput5(const char* filename, Graph* g);
-void writeOutput6(const char* filename, Graph* g);
+void writeOutput5(const char* filename, Graph* g, char startVertex[MAX_NLENGTH]);
+void writeOutput6(const char* filename, Graph* g, char startVertex[MAX_NLENGTH]);
 
 #endif
