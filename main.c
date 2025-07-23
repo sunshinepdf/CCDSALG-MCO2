@@ -7,45 +7,49 @@
  * Lee, Ashley Fiona
  * Villorente, Khyle Raeke
  */
-#
-include <stdio.h>
+
+#include <stdio.h>
+#include <stdlib.h>
 #include "graph.h"
+#include "IO.h"
 
-/**
- * Displays the graph in adjacency linked representation format.
- *
- * @param g A pointer to the Graph struct to be displayed.
- */
-void displayGraph(Graph* g) {
-    for (int i = 0; i < g->numVertices; i++) {
-        printf("%s ->", g->vertices[i].vertexName);
-        AdjListNode* temp = g->vertices[i].head;
-        while (temp != NULL) {
-            printf(" %s", g->vertices[temp->vertexIndex].vertexName);
-            temp = temp->next;
+int main(int argumentCount, char* argumentList[]) {
+    const char* inputFileName = NULL;
+    Graph graphData;
+    int loadedSuccessfully = 0;
+
+    // Check if input file was provided
+    if (argumentCount < 2) {
+        printf("Usage: %s <input_file>\n", argumentList[0]);
+    } else {
+        inputFileName = argumentList[1];
+
+        // loading the graph
+        if (readGraphFromFile(inputFileName, &graphData) != 0) {
+            printf("Failed to load graph from: %s\n", inputFileName);
+        } else {
+            loadedSuccessfully = 1;
+            printf("Graph loaded from: %s\n", inputFileName);
+            printf("Total number of vertices: %d\n", graphData.numVertices);
         }
-        printf("\n");
-    }
-}
-
-/**
- * The main function (Task 3) 
- */
-int main() {
-    Graph g;
-    initializeGraph(&g);
-
-    int n;
-    scanf("%d", &n);  // Number of edges
-
-    for (int i = 0; i < n; i++) {
-        char from[MAX_NLENGTH], to[MAX_NLENGTH];
-        scanf("%s %s", from, to);
-        addEdge(&g, from, to);
     }
 
-    printf("\nGraph adjacency list:\n");
-    displayGraph(&g);
+    // If graph loaded, print adjacency list
+    if (loadedSuccessfully) {
+        for (int vertexIndex = 0; vertexIndex < graphData.numVertices; vertexIndex++) {
+            printf("%s: ", graphData.vertices[vertexIndex].vertexName);
+
+            AdjListNode* currentNeighbor = graphData.vertices[vertexIndex].head;
+            while (currentNeighbor != NULL) {
+                printf("%s -> ", graphData.vertices[currentNeighbor->vertexIndex].vertexName);
+                currentNeighbor = currentNeighbor->next;
+            }
+
+            printf("NULL\n");
+        }
+    } else {
+        printf("Graph was not loaded. Cannot display adjacency list.\n");
+    }
 
     return 0;
 }
