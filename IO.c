@@ -337,3 +337,68 @@ void writeOutput6(const char* filename, Graph* g) {
     
     fclose(file);
 }  
+
+
+// /**
+//  * Output5: Writes BFS traversal sequence from a specified start vertex.
+//  * When multiple candidates exist, visit vertex with lowest ID (alphabetically first).
+//  * Uses BFS function from traversal.c to get the traversal data.
+//  * 
+//  * @param filename filename of the original input file 
+//  * @param g pointer to the Graph structure
+//  */
+// void writeOutput5(const char* filename, Graph* g, const char* startVertex) {
+//     char outputFilename[256];
+//     char bfsResult[MAX_VERTICES][MAX_NLENGTH];
+//     int count = BFSTraversal(g, startVertex, bfsResult);
+
+//     createOutputFilename(outputFilename, filename, "-BFS.TXT");
+    
+//     FILE* file = fopen(outputFilename, "w");
+//     if (!file || g->numVertices == 0) {
+//         fclose(file);
+//         return;
+//     }
+    
+//     for (int i = 0; i < count; i++) {
+//         if (i > 0) {
+//             fprintf(file, " ");
+//         }
+//         fprintf(file, "%s", bfsResult[i]);
+//     }
+//     fprintf(file, "\n");
+
+//     fclose(file);
+// }
+
+// /**
+//  * Output6: Writes DFS traversal sequence from a specified start vertex.
+//  * When multiple candidates exist, visit vertex with lowest ID (alphabetically first).
+//  * Uses DFS function from traversal.c to get the traversal data.
+//  * 
+//  * @param filename filename of the original input file 
+//  * @param g pointer to the Graph structure
+//  */
+// void writeOutput6(const char* filename, Graph* g, const char* startVertex) {
+//     char outputFilename[256];
+//     char dfsResult[MAX_VERTICES][MAX_NLENGTH];
+//     int count = DFSTraversal(g, startVertex, dfsResult);
+
+//     createOutputFilename(outputFilename, filename, "-DFS.TXT");
+    
+//     FILE* file = fopen(outputFilename, "w");
+//     if (!file || g->numVertices == 0) {
+//         fclose(file);
+//         return;
+//     }
+    
+//    for (int i = 0; i < count; i++) {
+//         if (i > 0) {
+//             fprintf(file, " ");
+//         }
+//         fprintf(file, "%s", dfsResult[i]);
+//     }
+//     fprintf(file, "\n");
+
+//     fclose(file);
+// }  
