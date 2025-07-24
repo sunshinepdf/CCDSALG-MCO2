@@ -14,19 +14,30 @@
 #include "IO.h"
 #include "traversal.h"
 
+/**
+ * This is the main function for running the social network graph program.
+ * It asks the user for a filename, reads the graph data from a file,
+ * then generates six output files based on the graph and traversal results.
+ *
+ * @return 0 if it runs successfully, 1 otherwise
+ */
 int main() {
     char inputFileName[100];
     Graph graphData;
+    int success = 0;
 
-    // Ask for the input filename (e.g., G.TXT)
-    printf("Input filename: ");
-    scanf("%s", inputFileName);
+     while (!success) {
+        // Ask for filename input
+        printf("Input filename: ");
+        scanf("%s", inputFileName);
 
-    // Try to read graph from the input file
-    if (readGraphFromFile(inputFileName, &graphData) == 0) {
-        return 1;
-    }
+        //Read graph from the input file
+        if (readGraphFromFile(inputFileName, &graphData) == 1) {
+                success = 1;
+        } 
+     }
 
+    // Execute output files 1 to 4
     writeOutput1(inputFileName, &graphData);
     writeOutput2(inputFileName, &graphData);
     writeOutput3(inputFileName, &graphData);
@@ -36,7 +47,6 @@ int main() {
     int found = 0;
     
     if(graphData.numVertices > 1) {
-
      while (!found ) {
             printf("Input start vertex for the traversal: ");
             scanf("%s", startVertex);
@@ -54,6 +64,13 @@ int main() {
              }
      }
 
+    // Now that a valid vertex is found, continue
+    writeOutput5(inputFileName, &graphData, startVertex);
+    writeOutput6(inputFileName, &graphData, startVertex);
+}
+
+
+    //Execute output files 5 and 6
         writeOutput5(inputFileName, &graphData, startVertex);
         writeOutput6(inputFileName, &graphData, startVertex);
     }
