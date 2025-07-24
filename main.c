@@ -22,6 +22,7 @@ int main() {
     printf("Input filename: ");
     scanf("%s", inputFileName);
 
+    initializeGraph(&graphData);
     // Try to read graph from the input file
     if (readGraphFromFile(inputFileName, &graphData) == 0) {
         return 1;
