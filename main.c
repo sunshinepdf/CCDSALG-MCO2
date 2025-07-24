@@ -24,7 +24,6 @@ int main() {
 
     // Try to read graph from the input file
     if (readGraphFromFile(inputFileName, &graphData) == 0) {
-        printf("File %s not found.\n", inputFileName);
         return 1;
     }
 
