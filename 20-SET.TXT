@@ -1,0 +1,2 @@
+V(G)={Anna,Ben,Cleo,Dane,Elle,Finn,Gail,Hugo,Iris,Jude,Kara,Liam,Mina,Nico,Owen,Pia,Quin,Rhea,Seth,Tess}
+E(G)={}

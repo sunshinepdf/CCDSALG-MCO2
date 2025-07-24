@@ -1,0 +1,10 @@
+Eng->Fil->\
+Fil->Eng->Chi->\
+Chi->Fil->Tai->\
+Tai->Chi->\
+Jap->Kor->\
+Kor->Jap->Ger->\
+Ger->Kor->Spa->\
+Spa->Ger->\
+Ita->\
+Fre->\

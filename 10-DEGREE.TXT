@@ -1,0 +1,10 @@
+Chi 	2
+Eng 	1
+Fil 	2
+Fre 	0
+Ger 	2
+Ita 	0
+Jap 	1
+Kor 	2
+Spa 	1
+Tai 	1

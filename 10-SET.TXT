@@ -1,0 +1,2 @@
+V(G)={Chi,Eng,Fil,Fre,Ger,Ita,Jap,Kor,Spa,Tai}
+E(G)={(Chi,Fil),(Chi,Tai),(Eng,Fil),(Ger,Kor),(Ger,Spa),(Jap,Kor)}

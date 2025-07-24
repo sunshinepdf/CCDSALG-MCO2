@@ -1,0 +1,11 @@
+          Eng     Fil     Chi     Tai     Jap     Kor     Ger     Spa     Ita     Fre
+  Eng       0       1       0       0       0       0       0       0       0       0
+  Fil       1       0       1       0       0       0       0       0       0       0
+  Chi       0       1       0       1       0       0       0       0       0       0
+  Tai       0       0       1       0       0       0       0       0       0       0
+  Jap       0       0       0       0       0       1       0       0       0       0
+  Kor       0       0       0       0       1       0       1       0       0       0
+  Ger       0       0       0       0       0       1       0       1       0       0
+  Spa       0       0       0       0       0       0       1       0       0       0
+  Ita       0       0       0       0       0       0       0       0       0       0
+  Fre       0       0       0       0       0       0       0       0       0       0
