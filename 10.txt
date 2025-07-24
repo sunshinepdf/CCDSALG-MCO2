@@ -1,0 +1,11 @@
+10
+Eng Fil -1
+Fil Eng Chi -1
+Chi Fil Tai -1
+Tai Chi -1
+Jap Kor -1
+Kor Jap Ger -1
+Ger Kor Spa -1
+Spa Ger -1
+Ita -1
+Fre -1
