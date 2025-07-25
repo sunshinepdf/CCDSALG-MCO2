@@ -13,12 +13,12 @@
 /**
  * Creates a new queue for BFS/DFS traversal.
  * 
- * @return Pointer to the newly created Queue.
+ * @return q Pointer to the newly created Queue.
  */
 Queue* createQueue() {
-    Queue* q = (Queue*)malloc(sizeof(Queue));
-    q->front = q->rear = NULL;
-    return q;
+    Queue* q = (Queue*)malloc(sizeof(Queue)); // Allocate memory for a new Queue structure
+    q->front = q->rear = NULL;  // Initialize front and rear pointers to NULL
+    return q; 
 }
 
 /**
@@ -28,15 +28,17 @@ Queue* createQueue() {
  * @param vertexIndex Index of the vertex to add.
  */
 void enqueue(Queue* q, int vertexIndex) {
+    // Allocate and initialize a new queue node
     QueueNode* newNode = (QueueNode*)malloc(sizeof(QueueNode));
     newNode->vertexIndex = vertexIndex;
     newNode->next = NULL;
     
-    if (q->rear == NULL) {
-        q->front = q->rear = newNode;
+    if (q->rear == NULL) { //if empty 
+        q->front = q->rear = newNode; //point both front and rear to the new node
         return;
     }
-    
+
+    // If not empty, add the new node to the end of the queue
     q->rear->next = newNode;
     q->rear = newNode;
 }
@@ -48,11 +50,11 @@ void enqueue(Queue* q, int vertexIndex) {
  * @return Index of the vertex at the front of the queue, or -1 if empty.
  */
 int dequeue(Queue* q) {
-    if (q->front == NULL) return -1;
+    if (q->front == NULL) return -1; // if empty, return -1
     
-    QueueNode* temp = q->front;
-    int vertexIndex = temp->vertexIndex;
-    q->front = q->front->next;
+    QueueNode* temp = q->front; // temporarily store front node
+    int vertexIndex = temp->vertexIndex; 
+    q->front = q->front->next; // move front pointer to the next node
     
     if (q->front == NULL) q->rear = NULL;
     
@@ -92,7 +94,7 @@ void freeQueue(Queue* q) {
  * @param visited Array to track visited vertices.
  * @param result Array to store the traversal sequence.
  * @param resultCount Pointer to the count of vertices in result.
- * @return Number of vertices visited from this call.
+ * @return *resultCount Number of vertices visited from this call.
  */
 int DFSUtil(Graph* g, int vertexIndex, int visited[], char result[][MAX_NLENGTH], int* resultCount) {
     visited[vertexIndex] = 1;
@@ -101,7 +103,8 @@ int DFSUtil(Graph* g, int vertexIndex, int visited[], char result[][MAX_NLENGTH]
     
     char adjacentVertices[MAX_VERTICES][MAX_NLENGTH];
     int adjacentCount = 0;
-    
+
+    // Gather unvisited adjacent vertex labels
     AdjListNode* adjNode = g->vertices[vertexIndex].head;
     while (adjNode != NULL) {
         int adjIndex = adjNode->vertexIndex;
@@ -111,11 +114,13 @@ int DFSUtil(Graph* g, int vertexIndex, int visited[], char result[][MAX_NLENGTH]
         }
         adjNode = adjNode->next;
     }
-    
+
+    // Sort adjacent vertex labels to prioritize lower ID
     if (adjacentCount > 1) {
         quickSortVertices(adjacentVertices, 0, adjacentCount - 1);
     }
-    
+
+    // Visit each unvisited adjacent vertex recursively
     for (int i = 0; i < adjacentCount; i++) {
         int adjIndex = getVertexIndex(g, adjacentVertices[i]);
         if (!visited[adjIndex]) {
