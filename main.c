@@ -24,18 +24,15 @@
 int main() {
     char inputFileName[100];
     Graph graphData;
-    int success = 0;
+    
+    // Ask for filename input
+    printf("Input filename: ");
+    scanf("%s", inputFileName);
 
-     while (!success) {
-        // Ask for filename input
-        printf("Input filename: ");
-        scanf("%s", inputFileName);
-
-        //Read graph from the input file
-        if (readGraphFromFile(inputFileName, &graphData) == 1) {
-                success = 1;
-        } 
-     }
+    ///Read graph from the input file
+    if (readGraphFromFile(inputFileName, &graphData) == 1) {
+        return 1;
+    } 
 
     // Execute output files 1 to 4
     writeOutput1(inputFileName, &graphData);
@@ -45,34 +42,31 @@ int main() {
 
     char startVertex[MAX_NLENGTH]; 
     int found = 0;
-    
+
+    //Checking if graph has more than 1 vertex
     if(graphData.numVertices > 1) {
-     while (!found ) {
+     while (!found ) { //Loop until start vertex is found
             printf("Input start vertex for the traversal: ");
             scanf("%s", startVertex);
 
+             // Search the graph's vertex list for a match with the user's input
              for (int i = 0; i < graphData.numVertices; i++) {
                 if (strcmp(graphData.vertices[i].vertexName, startVertex) == 0) {
-                    found = 1;
+                    found = 1; // vertext found
                     break;
                  }
              }
-            
-            if (!found) {
+
+            if (!found) { //Input vertext is not found
                  printf("Vertex %s not found.\n", startVertex);
                  return 1;
              }
      }
 
-    // Now that a valid vertex is found, continue
+    //Execute output files 5 and 6
     writeOutput5(inputFileName, &graphData, startVertex);
     writeOutput6(inputFileName, &graphData, startVertex);
-}
-
-
-    //Execute output files 5 and 6
-        writeOutput5(inputFileName, &graphData, startVertex);
-        writeOutput6(inputFileName, &graphData, startVertex);
+        
     }
     return 0;
 }
