@@ -17,13 +17,13 @@
 
 /**
  * To create a new adjacency list node.
- * @param index points to the index of the node.
- * @return a pointer to the newly created AdjListNode.
+ * @param index Points to the index of the node.
+ * @return node A pointer to the newly created AdjListNode.
  */
 AdjListNode* createAdjListNode(int index) {
     AdjListNode* node = (AdjListNode*)malloc(sizeof(AdjListNode));
-    node->vertexIndex = index;
-    node->next = NULL;
+    node->vertexIndex = index; // Assign vertex index to the node
+    node->next = NULL; // Initialize the next pointer to NULL
     return node;
 }
 
@@ -32,12 +32,12 @@ AdjListNode* createAdjListNode(int index) {
  * 
  * @param g pointer to the graph structure.
  * @param label the name of the vertex.
- * @return the index of the vertex in the graph's array.
+ * @return the index of the vertex in the graph's array; otherwise -1 if max vertices reached
  */
 int getVertexIndex(Graph* g, const char* label) {
     for (int i = 0; i < g->numVertices; i++) {
         if (strcmp(g->vertices[i].vertexName, label) == 0)
-            return i;
+            return i; //vertex found, return index
     }
     
     if (g->numVertices < MAX_VERTICES) {
