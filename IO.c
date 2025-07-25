@@ -57,8 +57,8 @@ int readGraphFromFile(const char* filename, Graph* g) {
         }
     }
 
-    fseek(file, filePos, SEEK_SET);
-    for (int i = 0; i < numVertices; i++) {
+    fseek(file, filePos, SEEK_SET); // Reset file position to beginning of vertex list to re-read lines
+    for (int i = 0; i < numVertices; i++) { // Second pass: parse each vertex line and build adjacency lists
         if (!fgets(line, sizeof(line), file)) {
             fclose(file);
             return 0;
@@ -85,7 +85,8 @@ int readGraphFromFile(const char* filename, Graph* g) {
 int parseVertexLine(const char* line, Graph* g) {
     char lineCopy[256];
     strcpy(lineCopy, line);
-    
+
+    // Get the first token 
     char* token = strtok(lineCopy, " \t\n");
     if (!token) {
         return 0;
@@ -99,7 +100,8 @@ int parseVertexLine(const char* line, Graph* g) {
     if (vertexIndex == -1) {
         return 0;
     }
-    
+
+    // Process each adjacent vertex in the line
     while ((token = strtok(NULL, " \t\n")) != NULL) {
         if (strcmp(token, "-1") == 0) {
             break;
@@ -111,7 +113,7 @@ int parseVertexLine(const char* line, Graph* g) {
 
         int toIdx = getVertexIndex(g, adjacentName);
         if (toIdx != -1) {
-            AdjListNode* current = g->vertices[vertexIndex].head;
+            AdjListNode* current = g->vertices[vertexIndex].head; // Check if edge already exists
             int exists = 0;
             while (current != NULL) {
                 if (current->vertexIndex == toIdx) {
@@ -121,13 +123,13 @@ int parseVertexLine(const char* line, Graph* g) {
                 current = current->next;
             }
             
-            if (!exists) {
+            if (!exists) {  // Add edge if not already connected
                 AdjListNode* newNode = createAdjListNode(toIdx);
                 newNode->next = NULL;
                 
                 if (g->vertices[vertexIndex].head == NULL) {
                     g->vertices[vertexIndex].head = newNode;
-                } else {
+                } else { // Append to end of adjacency list
                     AdjListNode* temp = g->vertices[vertexIndex].head;
                     while (temp->next != NULL) {
                         temp = temp->next;
@@ -149,22 +151,24 @@ int parseVertexLine(const char* line, Graph* g) {
  */
 void writeOutput1(const char* filename, Graph* g) {
     char outputFilename[256];
-    createOutputFilename(outputFilename, filename, "-SET.TXT");
+    createOutputFilename(outputFilename, filename, "-SET.TXT"); // Create output filename
     
-    FILE* file = fopen(outputFilename, "w");
+    FILE* file = fopen(outputFilename, "w"); // Open file for writing
     
     char sortedVertices[MAX_VERTICES][MAX_NLENGTH];
     int vertexCount = g->numVertices;
-    
+
+    // Copy vertex for sorting
     for (int i = 0; i < vertexCount; i++) {
         strcpy(sortedVertices[i], g->vertices[i].vertexName);
     }
-    
+
+    // Sort vertex in ascending order
     if (vertexCount > 1) {
         quickSortVertices(sortedVertices, 0, vertexCount - 1);
     }
     
-
+    // Write the vertex set V(G)
     fprintf(file, "V(G)={");
     for (int i = 0; i < vertexCount; i++) {
         fprintf(file, "%s", sortedVertices[i]);
@@ -174,7 +178,7 @@ void writeOutput1(const char* filename, Graph* g) {
     }
     fprintf(file, "}\n");
     
-
+    // Gather all undirected edges
     Edge edges[MAX_VERTICES * MAX_VERTICES];
     int edgeCount = 0;
     
@@ -184,8 +188,9 @@ void writeOutput1(const char* filename, Graph* g) {
             char vertex1[MAX_NLENGTH], vertex2[MAX_NLENGTH];
             strcpy(vertex1, g->vertices[i].vertexName);
             strcpy(vertex2, g->vertices[current->vertexIndex].vertexName);
-            
-            if (strcmp(vertex1, vertex2) < 0) {
+
+            // Add edge only if vertex1 < vertex2 to avoid duplicates
+            if (strcmp(vertex1, vertex2) < 0) { 
                 strcpy(edges[edgeCount].from, vertex1);
                 strcpy(edges[edgeCount].to, vertex2);
                 edgeCount++;
@@ -195,11 +200,12 @@ void writeOutput1(const char* filename, Graph* g) {
         }
     }
     
-    if (edgeCount > 1) {
+    if (edgeCount > 1) {  // Sort edges lexicographically
         quickSortEdges(edges, 0, edgeCount - 1);
     }
-    
-    fprintf(file, "E(G)={");
+
+    // Write the edge set E(G)
+    fprintf(file, "E(G)={"); 
     for (int i = 0; i < edgeCount; i++) {
         fprintf(file, "(%s,%s)", edges[i].from, edges[i].to);
         if (i < edgeCount - 1) {
@@ -208,7 +214,7 @@ void writeOutput1(const char* filename, Graph* g) {
     }
     fprintf(file, "}\n");
     
-    fclose(file);
+    fclose(file); // Close the output file
 }
 
 /**
@@ -219,12 +225,12 @@ void writeOutput1(const char* filename, Graph* g) {
  */
 void writeOutput2(const char* filename, Graph* g) {
     char outputFilename[256];
-    createOutputFilename(outputFilename, filename, "-DEGREE.TXT");
-    FILE* file = fopen(outputFilename, "w");
-    
+    createOutputFilename(outputFilename, filename, "-DEGREE.TXT"); // Create output filename
+    FILE* file = fopen(outputFilename, "w");  // Open file for writing
+
     VertexDegree vertexDegrees[MAX_VERTICES];
     int vertexCount = g->numVertices;
-    for (int i = 0; i < vertexCount; i++) {
+    for (int i = 0; i < vertexCount; i++) {  // Count degree for each vertex
         strcpy(vertexDegrees[i].name, g->vertices[i].vertexName);
 
         int degree = 0;
@@ -236,15 +242,15 @@ void writeOutput2(const char* filename, Graph* g) {
         vertexDegrees[i].degree = degree;
     }
     
-    if (vertexCount > 1) {
+    if (vertexCount > 1) { // Sort vertices in ascending order
         quickSortVertexDegrees(vertexDegrees, 0, vertexCount - 1);
     }
     
-    for (int i = 0; i < vertexCount; i++) {
+    for (int i = 0; i < vertexCount; i++) { // Output format 
         fprintf(file, "%s \t%d\n", vertexDegrees[i].name, vertexDegrees[i].degree);
     }
     
-    fclose(file);
+    fclose(file); // Close the output file
 }
 
 /**
@@ -255,11 +261,11 @@ void writeOutput2(const char* filename, Graph* g) {
  */
 void writeOutput3(const char* filename, Graph* g) {
     char outputFilename[256];
-    createOutputFilename(outputFilename, filename, "-LIST.TXT");
-    
-    FILE* file = fopen(outputFilename, "w");    
-    for (int i = 0; i < g->numVertices; i++) {
-        fprintf(file, "%s", g->vertices[i].vertexName);
+    createOutputFilename(outputFilename, filename, "-LIST.TXT"); //Create output filename
+     
+    FILE* file = fopen(outputFilename, "w");   // Open file for writing
+    for (int i = 0; i < g->numVertices; i++) { // Print its adjacency list for each vertex
+        fprintf(file, "%s", g->vertices[i].vertexName); 
         
         AdjListNode* current = g->vertices[i].head;
         while (current != NULL) {
@@ -269,7 +275,7 @@ void writeOutput3(const char* filename, Graph* g) {
         fprintf(file, "->\\\n");
     }
     
-    fclose(file);
+    fclose(file); //Close file
 }
 
 /**
@@ -281,23 +287,25 @@ void writeOutput3(const char* filename, Graph* g) {
  */
 void writeOutput4(const char* filename, Graph* g) {
     char outputFilename[256];
-    createOutputFilename(outputFilename, filename, "-MATRIX.TXT");
-    
-    FILE* file = fopen(outputFilename, "w");
+    createOutputFilename(outputFilename, filename, "-MATRIX.TXT"); //Create ourput filname
+     
+    FILE* file = fopen(outputFilename, "w");  // Open file for writing
     int vertexCount = g->numVertices;
 
+     // Print header row (column labels)
     fprintf(file, "     "); 
     for (int i = 0; i < vertexCount; i++) {
-        fprintf(file, "%8s", g->vertices[i].vertexName);
+        fprintf(file, "%8s", g->vertices[i].vertexName); // Col header
     }
     fprintf(file, "\n");
 
-    for (int i = 0; i < vertexCount; i++) {
-        fprintf(file, "%5s", g->vertices[i].vertexName);
+    for (int i = 0; i < vertexCount; i++) { // Print each row
+        fprintf(file, "%5s", g->vertices[i].vertexName);   // Row label
         for (int j = 0; j < vertexCount; j++) 
         {
             int connected = 0;
-            AdjListNode* current = g->vertices[i].head;
+            // Check if j is adjacent to i
+            AdjListNode* current = g->vertices[i].head; 
             while (current != NULL) {
                 if (current->vertexIndex == j) 
                 {
@@ -306,12 +314,12 @@ void writeOutput4(const char* filename, Graph* g) {
                 }
                 current = current->next;
             }
-            fprintf(file, "%8d", connected);
+            fprintf(file, "%8d", connected); // Print 1 if edge exists, else 0
         }
         fprintf(file, "\n");
     }
     
-    fclose(file);
+    fclose(file); //Close file
 }
 
 /**
@@ -324,9 +332,9 @@ void writeOutput4(const char* filename, Graph* g) {
  */
 void writeOutput5(const char* filename, Graph* g, char startVertex[MAX_NLENGTH]) {
     char outputFilename[256];
-    createOutputFilename(outputFilename, filename, "-BFS.TXT");
+    createOutputFilename(outputFilename, filename, "-BFS.TXT"); //Create output filename
     
-    FILE* file = fopen(outputFilename, "w");
+    FILE* file = fopen(outputFilename, "w"); // Open file for writing
 
     if (g->numVertices == 0) {
         fclose(file);
@@ -334,9 +342,9 @@ void writeOutput5(const char* filename, Graph* g, char startVertex[MAX_NLENGTH])
     }
     
     char bfsResult[MAX_VERTICES][MAX_NLENGTH];
-    int count = BFSTraversal(g, startVertex, bfsResult);
+    int count = BFSTraversal(g, startVertex, bfsResult); // Perform BFS starting from startVertex
 
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++) { // Write result to file
         if (i > 0) {
             fprintf(file, " ");
         }
@@ -344,7 +352,7 @@ void writeOutput5(const char* filename, Graph* g, char startVertex[MAX_NLENGTH])
     }
     fprintf(file, "\n");
     
-    fclose(file);
+    fclose(file); //Close file
 }
 
 /**
@@ -357,9 +365,9 @@ void writeOutput5(const char* filename, Graph* g, char startVertex[MAX_NLENGTH])
  */
 void writeOutput6(const char* filename, Graph* g, char startVertex[MAX_NLENGTH]) {
     char outputFilename[256];
-    createOutputFilename(outputFilename, filename, "-DFS.TXT");
+    createOutputFilename(outputFilename, filename, "-DFS.TXT"); //Create output filename
     
-    FILE* file = fopen(outputFilename, "w");
+    FILE* file = fopen(outputFilename, "w"); // Open file for writing
 
     if (g->numVertices == 0) {
         fclose(file);
@@ -367,9 +375,9 @@ void writeOutput6(const char* filename, Graph* g, char startVertex[MAX_NLENGTH])
     }
     
     char dfsResult[MAX_VERTICES][MAX_NLENGTH];
-    int count = DFSTraversal(g, startVertex, dfsResult);
+    int count = DFSTraversal(g, startVertex, dfsResult); // Perform DFS starting from startVertex
     
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++) { // Write traversal result
         if (i > 0) {
             fprintf(file, " ");
         }
@@ -377,5 +385,5 @@ void writeOutput6(const char* filename, Graph* g, char startVertex[MAX_NLENGTH])
     }
     fprintf(file, "\n");
     
-    fclose(file);
+    fclose(file); //Close file
 }  
