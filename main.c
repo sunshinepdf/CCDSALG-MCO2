@@ -45,28 +45,26 @@ int main() {
 
     //Checking if graph has more than 1 vertex
     if(graphData.numVertices > 1) {
-     while (!found ) { //Loop until start vertex is found
-            printf("Input start vertex for the traversal: ");
-            scanf("%s", startVertex);
-
+         while (!found ) { //Loop until start vertex is found
+             printf("Input start vertex for the traversal: ");
+             scanf("%s", startVertex);
+            
              // Search the graph's vertex list for a match with the user's input
              for (int i = 0; i < graphData.numVertices; i++) {
-                if (strcmp(graphData.vertices[i].vertexName, startVertex) == 0) {
-                    found = 1; // vertext found
-                    break;
-                 }
-             }
-
+                 if (strcmp(graphData.vertices[i].vertexName, startVertex) == 0) {
+                     found = 1; // vertext found
+                     break;
+                }
+            }
+    
             if (!found) { //Input vertext is not found
-                 printf("Vertex %s not found.\n", startVertex);
-                 return 1;
-             }
-     }
-
-    //Execute output files 5 and 6
-    writeOutput5(inputFileName, &graphData, startVertex);
-    writeOutput6(inputFileName, &graphData, startVertex);
-        
-    }
+                printf("Vertex %s not found.\n", startVertex);
+                return 1;
+            }
+         }
+            //Execute output files 5 and 6
+            writeOutput5(inputFileName, &graphData, startVertex);
+            writeOutput6(inputFileName, &graphData, startVertex);
+        }
     return 0;
 }
