@@ -154,6 +154,15 @@ void writeOutput1(const char* filename, Graph* g) {
     createOutputFilename(outputFilename, filename, "-SET.TXT"); // Create output filename
     
     FILE* file = fopen(outputFilename, "w"); // Open file for writing
+
+    char baseName[256];
+    strncpy(baseName, filename, sizeof(baseName));
+    baseName[sizeof(baseName) - 1] = '\0';
+
+    char *dot = strrchr(baseName, '.');
+    if (dot) {
+        *dot = '\0';
+    }
     
     char sortedVertices[MAX_VERTICES][MAX_NLENGTH];
     int vertexCount = g->numVertices;
@@ -169,7 +178,7 @@ void writeOutput1(const char* filename, Graph* g) {
     }
     
     // Write the vertex set V(G)
-    fprintf(file, "V(G)={");
+    fprintf(file, "V(%s)={", baseName);
     for (int i = 0; i < vertexCount; i++) {
         fprintf(file, "%s", sortedVertices[i]);
         if (i < vertexCount - 1) {
@@ -205,7 +214,7 @@ void writeOutput1(const char* filename, Graph* g) {
     }
 
     // Write the edge set E(G)
-    fprintf(file, "E(G)={"); 
+    fprintf(file, "E(%s)={", baseName); 
     for (int i = 0; i < edgeCount; i++) {
         fprintf(file, "(%s,%s)", edges[i].from, edges[i].to);
         if (i < edgeCount - 1) {
