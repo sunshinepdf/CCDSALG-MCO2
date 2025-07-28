@@ -17,10 +17,10 @@
  * @param g Pointer to the Graph structure.
  * @param startVertex Name of the starting vertex for BFS.
  * @param result Array to store the traversal sequence (vertex names).
- * @return resultCount Number of vertices in the traversal sequence.
+ * @return Number of vertices in the traversal sequence.
  */
 int BFSTraversal(Graph* g, const char* startVertex, char result[][MAX_NLENGTH]) {
-    int startIndex = getVertexIndex(g, startVertex);
+       int startIndex = getVertexIndex(g, startVertex);
     if (startIndex == -1) {
         return 0;
     }
@@ -78,10 +78,10 @@ int BFSTraversal(Graph* g, const char* startVertex, char result[][MAX_NLENGTH]) 
  * @param g Pointer to the Graph structure.
  * @param startVertex Name of the starting vertex for DFS.
  * @param result Array to store the traversal sequence (vertex names).
- * @return resultCount Number of vertices in the traversal sequence.
+ * @return Number of vertices in the traversal sequence.
  */
 int DFSTraversal(Graph* g, const char* startVertex, char result[][MAX_NLENGTH]) {
-    int startIndex = getVertexIndex(g, startVertex);
+      int startIndex = getVertexIndex(g, startVertex);
     if (startIndex == -1) {
         return 0;
     }
@@ -89,8 +89,8 @@ int DFSTraversal(Graph* g, const char* startVertex, char result[][MAX_NLENGTH]) 
     int visited[MAX_VERTICES] = {0};
     int resultCount = 0;
 
-    // recursive DFS from the start vertex
+    // Recursive DFS from the start vertex
     DFSUtil(g, startIndex, visited, result, &resultCount);
     
-    return resultCount;
+    return resultCount; 
 }
